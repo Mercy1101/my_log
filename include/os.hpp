@@ -1,4 +1,4 @@
-///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
@@ -75,7 +75,7 @@
 #endif
 
 namespace lee {
-namespace os {
+inline namespace os {
 
 // folder separator
 #ifdef _WIN32
@@ -83,6 +83,44 @@ static const char folder_sep = '\\';
 #else
 constexpr static const char folder_sep = '/';
 #endif
+
+/// @name     path_exists
+/// @brief    判断一个路径或文件是否存在
+///
+/// @param    filename  [in]  路径名称
+///
+/// @return   存在则返回真
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:48:00
+/// @warning  线程不安全
+inline bool path_exists(const std::string& filename) noexcept {
+#ifdef _WIN32
+  auto attribs = ::GetFileAttributesA(filename.c_str());
+  return attribs != ((DWORD)-1);
+#else  // common linux/unix all have the stat system call
+  struct stat buffer;
+  return (::stat(filename.c_str(), &buffer) == 0);
+#endif
+}
+
+/// @name     mkdir_
+/// @brief    创建一个路径
+///
+/// @param    path  [in]  要创建的路径
+///
+/// @return   创建成功则返回真
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:45:31
+/// @warning  线程不安全
+static inline bool mkdir_(const std::string& path) {
+#ifdef _WIN32
+  return ::_mkdir(path.c_str()) == 0;
+#else
+return ::mkdir(path.c_str(), mode_t(0755)) == 0;
+#endif
+}
 
 // create the given directory - and all directories leading to it
 // return true on success or if the directory already exists
@@ -97,7 +135,7 @@ constexpr static const char folder_sep = '/';
 /// @date     2020-07-18 15:42:57
 /// @warning  线程不安全
 inline bool create_dir(std::string path) {
-  if (path_exists(path)) {
+  if (lee::path_exists(path)) {
     return true;
   }
 
@@ -127,45 +165,6 @@ inline bool create_dir(std::string path) {
   } while (search_offset < path.size());
 
   return true;
-}
-
-/// @name     mkdir_
-/// @brief    创建一个路径
-///
-/// @param    path  [in]  要创建的路径
-///
-/// @return   创建成功则返回真
-///
-/// @author   Lijiancong, pipinstall@163.com
-/// @date     2020-07-18 15:45:31
-/// @warning  线程不安全
-static inline bool mkdir_(const std::string& path) {
-#ifdef _WIN32
-  return ::_mkdir(path.c_str()) == 0;
-#endif
-#else
-return ::mkdir(path.c_str(), mode_t(0755)) == 0;
-#endif
-}
-
-/// @name     path_exists
-/// @brief    判断一个路径或文件是否存在
-///
-/// @param    filename  [in]  路径名称
-///
-/// @return   存在则返回真
-///
-/// @author   Lijiancong, pipinstall@163.com
-/// @date     2020-07-18 15:48:00
-/// @warning  线程不安全
-inline bool path_exists(const std::string& filename) noexcept {
-#ifdef _WIN32
-  auto attribs = ::GetFileAttributesA(filename.c_str());
-  return attribs != ((DWORD)-1);
-#else  // common linux/unix all have the stat system call
-  struct stat buffer;
-  return (::stat(filename.c_str(), &buffer) == 0);
-#endif
 }
 
 /// @name     dir_name
@@ -261,7 +260,7 @@ inline size_t filesize(FILE* f) {
 #endif
 #endif
   throw("Failed getting file size from fd", errno);
-  return 0;  // will not be reached.
+  /// return 0;  // will not be reached.
 }
 
 }  // namespace os

@@ -9,5 +9,6 @@
 
 int main(int argc, char** argv) {
   Catch::Session().run(argc, argv);
+  system("pause");
   return 0;
 }
