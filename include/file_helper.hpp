@@ -1,4 +1,4 @@
-///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
@@ -19,7 +19,7 @@
 #include "os.hpp"
 
 namespace lee {
-inline namespace file_helper {
+inline namespace my_log {
 
 /// @name     file_helper
 /// @brief    用于实现循环写文件的操作
@@ -45,19 +45,19 @@ class file_helper {
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2020-07-18 16:01:09
   /// @warning  线程不安全
-  inline void open(const std::string &fname, bool truncate) {
+  inline void open(const std::string &fname, bool truncate = false) {
     close();
     filename_ = fname;
     auto *mode = truncate ? ("wb") : ("ab");
 
     for (int tries = 0; tries < open_tries_; ++tries) {
       // create containing folder if not exists already.
-      create_dir(dir_name(fname));
+      lee::create_dir(dir_name(fname));
       if (!fopen_s(&fd_, fname.c_str(), mode)) {
         return;
       }
 
-      sleep_for_millis(open_interval_);
+      lee::sleep_for_millis(open_interval_);
     }
 
     throw("Failed opening file " + filename_ + " for writing");

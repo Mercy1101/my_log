@@ -22,8 +22,14 @@ set(SOURCES
     src/main.cc
 )
 
+# 单元测试文件
+set(UNITEST_SOURCES
+  test/file_helper_unittest.cc
+)
+
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
+                                      ${UNITEST_SOURCES}
 )
 
 # 设置包含路径
