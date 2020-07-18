@@ -1,0 +1,270 @@
+///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
+///
+/// Use of this source code is governed by a MIT license
+/// that can be found in the License file.
+///
+/// @file   os.hpp
+/// @brief  跟系统相关的工具
+///
+/// @author lijiancong, pipinstall@163.com
+/// @date   2020-07-18 15:31:14
+///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+
+#ifndef MY_LOG_INCLUDE_OS_H_
+#define MY_LOG_INCLUDE_OS_H_
+
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <string>
+#include <thread>
+
+#ifdef _WIN32
+
+#include <io.h>       // _get_osfhandle and _isatty support
+#include <process.h>  //  _get_pid support
+#ifndef NOMINMAX
+#define NOMINMAX  // prevent windows redefining min/max
+#endif
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>
+
+#ifdef __MINGW32__
+#include <share.h>
+#endif
+
+#include <direct.h>  // for _mkdir/_wmkdir
+
+#else  // unix
+
+#include <fcntl.h>
+#include <unistd.h>
+
+#ifdef __linux__
+#include <sys/syscall.h>  //Use gettid() syscall under linux to get thread id
+
+#elif defined(_AIX)
+#include <pthread.h>  // for pthread_getthreadid_np
+
+#elif defined(__DragonFly__) || defined(__FreeBSD__)
+#include <pthread_np.h>  // for pthread_getthreadid_np
+
+#elif defined(__NetBSD__)
+#include <lwp.h>  // for _lwp_self
+
+#elif defined(__sun)
+#include <thread.h>  // for thr_self
+#endif
+
+#endif  // unix
+
+#ifndef __has_feature       // Clang - feature checking macros.
+#define __has_feature(x) 0  // Compatibility with non-clang compilers.
+#endif
+
+namespace lee {
+namespace os {
+
+// folder separator
+#ifdef _WIN32
+static const char folder_sep = '\\';
+#else
+constexpr static const char folder_sep = '/';
+#endif
+
+// create the given directory - and all directories leading to it
+// return true on success or if the directory already exists
+/// @name     create_dir
+/// @brief    创建一个路径
+///
+/// @param    path [in] 要创建的路径
+///
+/// @return   创建成功或路径已经存在则返回真
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:42:57
+/// @warning  线程不安全
+inline bool create_dir(std::string path) {
+  if (path_exists(path)) {
+    return true;
+  }
+
+  if (path.empty()) {
+    return false;
+  }
+
+#ifdef _WIN32
+  // support forward slash in windows
+  std::replace(path.begin(), path.end(), '/', folder_sep);
+#endif
+
+  size_t search_offset = 0;
+  do {
+    auto token_pos = path.find(folder_sep, search_offset);
+    // treat the entire path as a folder if no folder separator not found
+    if (token_pos == std::string::npos) {
+      token_pos = path.size();
+    }
+
+    auto subdir = path.substr(0, token_pos);
+
+    if (!subdir.empty() && !path_exists(subdir) && !mkdir_(subdir)) {
+      return false;  // return error if failed creating dir
+    }
+    search_offset = token_pos + 1;
+  } while (search_offset < path.size());
+
+  return true;
+}
+
+/// @name     mkdir_
+/// @brief    创建一个路径
+///
+/// @param    path  [in]  要创建的路径
+///
+/// @return   创建成功则返回真
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:45:31
+/// @warning  线程不安全
+static inline bool mkdir_(const std::string& path) {
+#ifdef _WIN32
+  return ::_mkdir(path.c_str()) == 0;
+#endif
+#else
+return ::mkdir(path.c_str(), mode_t(0755)) == 0;
+#endif
+}
+
+/// @name     path_exists
+/// @brief    判断一个路径或文件是否存在
+///
+/// @param    filename  [in]  路径名称
+///
+/// @return   存在则返回真
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:48:00
+/// @warning  线程不安全
+inline bool path_exists(const std::string& filename) noexcept {
+#ifdef _WIN32
+  auto attribs = ::GetFileAttributesA(filename.c_str());
+  return attribs != ((DWORD)-1);
+#else  // common linux/unix all have the stat system call
+  struct stat buffer;
+  return (::stat(filename.c_str(), &buffer) == 0);
+#endif
+}
+
+/// @name     dir_name
+/// @brief    获取文件夹名称
+/// @details  Return directory name from given path or empty string
+///           "abc/file" => "abc"
+///           "abc/" => "abc"
+///           "abc" => ""
+///           "abc///" => "abc//"
+///
+/// @param    path [in] 完整路径名
+///
+/// @return   文件夹名称
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:56:13
+/// @warning  线程不安全
+inline std::string dir_name(std::string path) {
+#ifdef _WIN32
+  // support forward slash in windows
+  std::replace(path.begin(), path.end(), '/', folder_sep);
+#endif
+  auto pos = path.find_last_of(folder_sep);
+  return pos != std::string::npos ? path.substr(0, pos) : std::string{};
+}
+
+/// @name     sleep_for_millis
+/// @brief    本线程睡眠一定毫秒
+///
+/// @param    milliseconds  [in]  毫秒数
+///
+/// @return   NONE
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 15:59:22
+/// @warning  线程不安全
+inline void sleep_for_millis(int milliseconds) noexcept {
+#if defined(_WIN32)
+  ::Sleep(milliseconds);
+#else
+  std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+#endif
+}
+
+/// @name     filesize
+/// @brief    返回一个文件的大小
+///
+/// @param    f [in]  文件指针
+///
+/// @return   文件大小
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-18 16:07:56
+/// @warning  线程不安全
+inline size_t filesize(FILE* f) {
+  if (f == nullptr) {
+    throw("Failed getting file size. fd is null");
+  }
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  int fd = ::_fileno(f);
+#if _WIN64  // 64 bits
+  __int64 ret = ::_filelengthi64(fd);
+  if (ret >= 0) {
+    return static_cast<size_t>(ret);
+  }
+
+#else  // windows 32 bits
+  long ret = ::_filelength(fd);
+  if (ret >= 0) {
+    return static_cast<size_t>(ret);
+  }
+#endif
+
+#else  // unix
+// OpenBSD doesn't compile with :: before the fileno(..)
+#if defined(__OpenBSD__)
+  int fd = fileno(f);
+#else
+  int fd = ::fileno(f);
+#endif
+// 64 bits(but not in osx or cygwin, where fstat64 is deprecated)
+#if (defined(__linux__) || defined(__sun) || defined(_AIX)) && \
+    (defined(__LP64__) || defined(_LP64))
+  struct stat64 st;
+  if (::fstat64(fd, &st) == 0) {
+    return static_cast<size_t>(st.st_size);
+  }
+#else  // other unix or linux 32 bits or cygwin
+  struct stat st;
+  if (::fstat(fd, &st) == 0) {
+    return static_cast<size_t>(st.st_size);
+  }
+#endif
+#endif
+  throw("Failed getting file size from fd", errno);
+  return 0;  // will not be reached.
+}
+
+}  // namespace os
+}  // namespace lee
+
+#endif  // end of MY_LOG_INCLUDE_OS_H_
