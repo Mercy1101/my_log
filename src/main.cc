@@ -11,6 +11,8 @@
 #include "profiler.hpp"
 
 int main(int argc, char** argv) {
+  (void)argc;
+  (void)argv;
   /// Catch::Session().run(argc, argv);
   for (auto i = 0; i < 10; i++) {
     PROFILER_F();

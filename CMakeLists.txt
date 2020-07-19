@@ -35,7 +35,11 @@ add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       #${UNITEST_SOURCES}
 )
 
+# 如果是linux系统就添加一个库
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
 target_link_libraries(${EXECUTABLE_EXE_NAME} PUBLIC pthread)
+ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+
 # 设置包含路径
 target_include_directories(${EXECUTABLE_EXE_NAME}
     PRIVATE 
