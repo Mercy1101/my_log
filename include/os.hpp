@@ -84,6 +84,29 @@ static const char folder_sep = '\\';
 constexpr static const char folder_sep = '/';
 #endif
 
+/// @name     get_time_string
+/// @brief    获取毫秒级别的格式化时间
+///
+/// @param    NONE
+///
+/// @return   格式化后的时间
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-07-19 09:31:00
+/// @warning  线程不安全
+inline std::string get_time_string() {
+  auto t = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count();
+
+  tm buf;
+  auto t1 = t / 1000;
+  localtime_s(&buf, &t1);
+  char p[32] = {0};
+  strftime(p, sizeof(p),"[%F %T", &buf);
+  return std::string(p) + "." + std::to_string(t % 1000) + "]";
+}
+
 /// @name     path_exists
 /// @brief    判断一个路径或文件是否存在
 ///
@@ -261,6 +284,21 @@ inline size_t filesize(FILE* f) {
 #endif
   throw("Failed getting file size from fd", errno);
   /// return 0;  // will not be reached.
+}
+
+inline int remove(const std::string &filename) noexcept
+{
+    return std::remove(filename.c_str());
+}
+
+inline int remove_if_exists(const std::string &filename) noexcept
+{
+    return path_exists(filename) ? remove(filename) : 0;
+}
+
+inline int rename(const std::string &filename1, const std::string &filename2) noexcept
+{
+    return std::rename(filename1.c_str(), filename2.c_str());
 }
 
 }  // namespace os
