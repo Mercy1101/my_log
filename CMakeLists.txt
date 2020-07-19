@@ -2,7 +2,8 @@
 cmake_minimum_required(VERSION 3.1)
 
 # 可执行文件名的名称
-set(EXECUTABLE_EXE_NAME my_log.out)
+set(EXECUTABLE_EXE_NAME my_log)
+set(PROJECT_NAME my_log)
 
 # 可执行文件生成路径
 set(EXECUTABLE_OUTPUT_PATH ../bin)
