@@ -26,6 +26,7 @@ namespace lee {
 inline namespace log {
 /// 默认文件刷新用的等级
 constexpr lee::level_enum DEFAULT_FILE_LOG_LEVEL = lee::level_enum::info;
+constexpr lee::level_enum DEFAULT_COUT_LOG_LEVEL = lee::level_enum::info;
 class log_wrapper {
  public:
   static log_wrapper& get_instance() {
@@ -59,13 +60,19 @@ class log_wrapper {
   }
 
  private:
-  log_wrapper() { logger.set_level(DEFAULT_FILE_LOG_LEVEL); }
+  log_wrapper() {
+    logger.set_level(DEFAULT_FILE_LOG_LEVEL);
+    cout_logger.set_level(DEFAULT_COUT_LOG_LEVEL);
+  }
   ~log_wrapper() = default;
   log_wrapper(const log_wrapper&) = delete;
   log_wrapper operator=(const log_wrapper&) = delete;
   log_wrapper(log_wrapper&&) = delete;
   log_wrapper operator=(log_wrapper&&) = delete;
   void base_log(const lee::level_enum& level, const std::string& log) {
+    if (cout_logger.should_log(level)) {
+      cout_logger.log(log);
+    }
     logger.log(log);
     if (logger.level() <= (level)) {
       logger.flush();
@@ -109,6 +116,7 @@ class log_wrapper {
   }
 
   lee::rotating_file_sink<std::mutex> logger;
+  lee::stdout_sink<std::mutex> cout_logger;
 };
 }  // namespace log
 }  // namespace lee
@@ -146,10 +154,10 @@ class log_wrapper {
   }
 
 #define LOG_ERROR(x)                                     \
-  {                                                     \
-    std::string _log_wrapper__;                         \
-    ::lee::log::log_wrapper::get_instance().write_log(  \
-        std::this_thread::get_id(), __func__, __LINE__, \
+  {                                                      \
+    std::string _log_wrapper__;                          \
+    ::lee::log::log_wrapper::get_instance().write_log(   \
+        std::this_thread::get_id(), __func__, __LINE__,  \
         ::lee::level_enum::error, (_log_wrapper__ + x)); \
   }
 

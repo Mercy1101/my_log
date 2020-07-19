@@ -14,10 +14,11 @@
 #ifndef MY_LOG_INCLUDE_LOG_H_
 #define MY_LOG_INCLUDE_LOG_H_
 
-#include "file_helper.hpp"
 #include <atomic>
 #include <mutex>
 #include <string>
+
+#include "file_helper.hpp"
 
 namespace lee {
 inline namespace log {
@@ -62,7 +63,7 @@ class sink {
 template <typename Mutex>
 class base_sink : public sink {
  public:
-  base_sink()   {}
+  base_sink() {}
   ~base_sink() override = default;
 
   base_sink(const base_sink &) = delete;
@@ -71,7 +72,7 @@ class base_sink : public sink {
   base_sink &operator=(const base_sink &) = delete;
   base_sink &operator=(base_sink &&) = delete;
 
-  void log(const std::string & msg) final {
+  void log(const std::string &msg) final {
     std::lock_guard<Mutex> lock(mutex_);
     sink_it_(msg);
   }
@@ -88,10 +89,20 @@ class base_sink : public sink {
 };
 
 template <typename Mutex>
+class stdout_sink final : public base_sink<Mutex> {
+ public:
+  virtual void sink_it_(const std::string &msg) override {
+    printf(msg.c_str());
+  }
+  virtual void flush_() override {}
+};
+template <typename Mutex>
 class rotating_file_sink final : public base_sink<Mutex> {
  public:
-  rotating_file_sink(std::string base_filename = std::string("log/detail/detail_log.log"), std::size_t max_size = 1048576*50,
-                     std::size_t max_files = 10, bool rotate_on_open = false)
+  rotating_file_sink(
+      std::string base_filename = std::string("log/detail/detail_log.log"),
+      std::size_t max_size = 1048576 * 50, std::size_t max_files = 10,
+      bool rotate_on_open = false)
       : base_filename_(std::move(base_filename)),
         max_size_(max_size),
         max_files_(max_files) {
@@ -110,7 +121,7 @@ class rotating_file_sink final : public base_sink<Mutex> {
 
     std::string basename, ext;
     std::tie(basename, ext) = file_helper::split_by_extension(filename);
-    return basename + std::to_string(index) + "." + ext;
+    return basename + std::to_string(index) + ext;
   }
   template <typename Mutex>
   inline std::string filename() {
@@ -158,8 +169,8 @@ class rotating_file_sink final : public base_sink<Mutex> {
           file_helper_.reopen(true);  // truncate the log file anyway to prevent
                                       // it to grow beyond its limit!
           current_size_ = 0;
-          throw("rotating_file_sink: failed renaming " + (src) +
-                    " to " + (target));
+          throw("rotating_file_sink: failed renaming " + (src) + " to " +
+                (target));
         }
       }
     }
