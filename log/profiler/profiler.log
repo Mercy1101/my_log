@@ -1,0 +1,160 @@
+[2020-07-19 00:41:10.1]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:15.697]
+1Function: main 
+Spand Time: 835.656314ms( 0.835656s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:15.697]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:16.203]
+1Function: main 
+Spand Time: 505.637628ms( 0.505638s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:16.203]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:16.556]
+1Function: main 
+Spand Time: 353.056606ms( 0.353057s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:16.556]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:16.912]
+1Function: main 
+Spand Time: 355.810455ms( 0.355810s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:16.912]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:17.223]
+1Function: main 
+Spand Time: 311.395156ms( 0.311395s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:17.223]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:17.620]
+1Function: main 
+Spand Time: 396.573636ms( 0.396574s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:17.620]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:18.10]
+1Function: main 
+Spand Time: 389.936128ms( 0.389936s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:18.10]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:18.665]
+1Function: main 
+Spand Time: 655.437568ms( 0.655438s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:18.665]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:18.936]
+1Function: main 
+Spand Time: 271.114067ms( 0.271114s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:41:18.936]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:41:19.570]
+1Function: main 
+Spand Time: 634.378225ms( 0.634378s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:52.126]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:55.716]
+1Function: main 
+Spand Time: 3589.938604ms( 3.589939s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:55.716]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:56.59]
+1Function: main 
+Spand Time: 342.560218ms( 0.342560s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:56.59]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:56.746]
+1Function: main 
+Spand Time: 687.748439ms( 0.687748s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:56.746]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:57.221]
+1Function: main 
+Spand Time: 474.384215ms( 0.474384s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:57.221]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:57.657]
+1Function: main 
+Spand Time: 436.172830ms( 0.436173s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:57.657]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:58.660]
+1Function: main 
+Spand Time: 1002.971229ms( 1.002971s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:58.660]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:59.64]
+1Function: main 
+Spand Time: 404.114851ms( 0.404115s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:59.64]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:59.373]
+1Function: main 
+Spand Time: 308.700537ms( 0.308701s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:59.373]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:42:59.715]
+1Function: main 
+Spand Time: 342.353776ms( 0.342354s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}
+[2020-07-19 00:42:59.715]
+Profiler is Running in main Line: 16 Memory: 0 KB(0 MB)
+ [2020-07-19 00:43:00.23]
+1Function: main 
+Spand Time: 307.994040ms( 0.307994s) 
+Memory: 0 KB(0 MB) 
+In File: /home/lijiancong/Desktop/workstation/my_log/src/main.cc  LINE: 16
+End of Function: main}

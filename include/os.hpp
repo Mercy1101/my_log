@@ -29,10 +29,10 @@
 
 #ifdef _WIN32
 
-#include <io.h>       // _get_osfhandle and _isatty support
-#include <process.h>  //  _get_pid support
+#include <io.h>      // _get_osfhandle and _isatty support
+#include <process.h> //  _get_pid support
 #ifndef NOMINMAX
-#define NOMINMAX  // prevent windows redefining min/max
+#define NOMINMAX // prevent windows redefining min/max
 #endif
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -45,33 +45,33 @@
 #include <share.h>
 #endif
 
-#include <direct.h>  // for _mkdir/_wmkdir
+#include <direct.h> // for _mkdir/_wmkdir
 
-#else  // unix
+#else // unix
 
 #include <fcntl.h>
 #include <unistd.h>
 
 #ifdef __linux__
-#include <sys/syscall.h>  //Use gettid() syscall under linux to get thread id
+#include <sys/syscall.h> //Use gettid() syscall under linux to get thread id
 
 #elif defined(_AIX)
-#include <pthread.h>  // for pthread_getthreadid_np
+#include <pthread.h> // for pthread_getthreadid_np
 
 #elif defined(__DragonFly__) || defined(__FreeBSD__)
-#include <pthread_np.h>  // for pthread_getthreadid_np
+#include <pthread_np.h> // for pthread_getthreadid_np
 
 #elif defined(__NetBSD__)
-#include <lwp.h>  // for _lwp_self
+#include <lwp.h> // for _lwp_self
 
 #elif defined(__sun)
-#include <thread.h>  // for thr_self
+#include <thread.h> // for thr_self
 #endif
 
-#endif  // unix
+#endif // unix
 
-#ifndef __has_feature       // Clang - feature checking macros.
-#define __has_feature(x) 0  // Compatibility with non-clang compilers.
+#ifndef __has_feature      // Clang - feature checking macros.
+#define __has_feature(x) 0 // Compatibility with non-clang compilers.
 #endif
 
 namespace lee {
@@ -96,14 +96,18 @@ constexpr static const char folder_sep = '/';
 /// @warning  线程不安全
 inline std::string get_time_string() {
   auto t = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            std::chrono::system_clock::now().time_since_epoch())
-                            .count();
+               std::chrono::system_clock::now().time_since_epoch())
+               .count();
 
   tm buf;
   auto t1 = t / 1000;
+#ifdef _WIN32
   localtime_s(&buf, &t1);
+#else
+  localtime_r(&t1, &buf);
+#endif
   char p[32] = {0};
-  strftime(p, sizeof(p),"[%F %T", &buf);
+  strftime(p, sizeof(p), "[%F %T", &buf);
   return std::string(p) + "." + std::to_string(t % 1000) + "]";
 }
 
@@ -117,11 +121,11 @@ inline std::string get_time_string() {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-07-18 15:48:00
 /// @warning  线程不安全
-inline bool path_exists(const std::string& filename) noexcept {
+inline bool path_exists(const std::string &filename) noexcept {
 #ifdef _WIN32
   auto attribs = ::GetFileAttributesA(filename.c_str());
   return attribs != ((DWORD)-1);
-#else  // common linux/unix all have the stat system call
+#else // common linux/unix all have the stat system call
   struct stat buffer;
   return (::stat(filename.c_str(), &buffer) == 0);
 #endif
@@ -137,11 +141,11 @@ inline bool path_exists(const std::string& filename) noexcept {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-07-18 15:45:31
 /// @warning  线程不安全
-static inline bool mkdir_(const std::string& path) {
+static inline bool mkdir_(const std::string &path) {
 #ifdef _WIN32
   return ::_mkdir(path.c_str()) == 0;
 #else
-return ::mkdir(path.c_str(), mode_t(0755)) == 0;
+  return ::mkdir(path.c_str(), mode_t(0755)) == 0;
 #endif
 }
 
@@ -182,7 +186,7 @@ inline bool create_dir(std::string path) {
     auto subdir = path.substr(0, token_pos);
 
     if (!subdir.empty() && !path_exists(subdir) && !mkdir_(subdir)) {
-      return false;  // return error if failed creating dir
+      return false; // return error if failed creating dir
     }
     search_offset = token_pos + 1;
   } while (search_offset < path.size());
@@ -242,26 +246,26 @@ inline void sleep_for_millis(int milliseconds) noexcept {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-07-18 16:07:56
 /// @warning  线程不安全
-inline size_t filesize(FILE* f) {
+inline size_t filesize(FILE *f) {
   if (f == nullptr) {
     throw("Failed getting file size. fd is null");
   }
 #if defined(_WIN32) && !defined(__CYGWIN__)
   int fd = ::_fileno(f);
-#if _WIN64  // 64 bits
+#if _WIN64 // 64 bits
   __int64 ret = ::_filelengthi64(fd);
   if (ret >= 0) {
     return static_cast<size_t>(ret);
   }
 
-#else  // windows 32 bits
+#else // windows 32 bits
   long ret = ::_filelength(fd);
   if (ret >= 0) {
     return static_cast<size_t>(ret);
   }
 #endif
 
-#else  // unix
+#else // unix
 // OpenBSD doesn't compile with :: before the fileno(..)
 #if defined(__OpenBSD__)
   int fd = fileno(f);
@@ -269,39 +273,64 @@ inline size_t filesize(FILE* f) {
   int fd = ::fileno(f);
 #endif
 // 64 bits(but not in osx or cygwin, where fstat64 is deprecated)
-#if (defined(__linux__) || defined(__sun) || defined(_AIX)) && \
+#if (defined(__linux__) || defined(__sun) || defined(_AIX)) &&                 \
     (defined(__LP64__) || defined(_LP64))
   struct stat64 st;
   if (::fstat64(fd, &st) == 0) {
     return static_cast<size_t>(st.st_size);
   }
-#else  // other unix or linux 32 bits or cygwin
+#else // other unix or linux 32 bits or cygwin
   struct stat st;
   if (::fstat(fd, &st) == 0) {
     return static_cast<size_t>(st.st_size);
   }
 #endif
 #endif
-  throw("Failed getting file size from fd", errno);
+  throw("Failed getting file size from fd");
   /// return 0;  // will not be reached.
 }
 
-inline int remove(const std::string &filename) noexcept
-{
-    return std::remove(filename.c_str());
+inline int remove(const std::string &filename) noexcept {
+  return std::remove(filename.c_str());
 }
 
-inline int remove_if_exists(const std::string &filename) noexcept
-{
-    return path_exists(filename) ? remove(filename) : 0;
+inline int remove_if_exists(const std::string &filename) noexcept {
+  return path_exists(filename) ? remove(filename) : 0;
 }
 
-inline int rename(const std::string &filename1, const std::string &filename2) noexcept
-{
-    return std::rename(filename1.c_str(), filename2.c_str());
+inline int rename(const std::string &filename1,
+                  const std::string &filename2) noexcept {
+  return std::rename(filename1.c_str(), filename2.c_str());
 }
 
-}  // namespace os
-}  // namespace lee
+// fopen_s on non windows for writing
+inline bool fopen_s(FILE **fp, const std::string &filename, const std::string &mode)
+{
+#ifdef _WIN32
+#ifdef SPDLOG_WCHAR_FILENAMES
+    *fp = ::_wfsopen((filename.c_str()), mode.c_str(), _SH_DENYNO);
+#else
+    *fp = ::_fsopen((filename.c_str()), mode.c_str(), _SH_DENYNO);
+#endif
+#if defined(SPDLOG_PREVENT_CHILD_FD)
+    if (*fp != nullptr)
+    {
+        auto file_handle = reinterpret_cast<HANDLE>(_get_osfhandle(::_fileno(*fp)));
+        if (!::SetHandleInformation(file_handle, HANDLE_FLAG_INHERIT, 0))
+        {
+            ::fclose(*fp);
+            *fp = nullptr;
+        }
+    }
+#endif
+#else // unix
+    *fp = ::fopen((filename.c_str()), mode.c_str());
+#endif
 
-#endif  // end of MY_LOG_INCLUDE_OS_H_
+    return *fp == nullptr;
+}
+
+} // namespace os
+} // namespace lee
+
+#endif // end of MY_LOG_INCLUDE_OS_H_

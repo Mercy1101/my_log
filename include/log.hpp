@@ -123,7 +123,6 @@ class rotating_file_sink final : public base_sink<Mutex> {
     std::tie(basename, ext) = file_helper::split_by_extension(filename);
     return basename + std::to_string(index) + ext;
   }
-  template <typename Mutex>
   inline std::string filename() {
     std::lock_guard<Mutex> lock(base_sink<Mutex>::mutex_);
     return file_helper_.filename();

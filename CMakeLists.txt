@@ -1,8 +1,8 @@
 # 设置CMAKE最小版本
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.1)
 
 # 可执行文件名的名称
-set(EXECUTABLE_EXE_NAME my_log)
+set(EXECUTABLE_EXE_NAME my_log.out)
 
 # 可执行文件生成路径
 set(EXECUTABLE_OUTPUT_PATH ../bin)
@@ -31,9 +31,10 @@ set(UNITEST_SOURCES
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
-                                      ${UNITEST_SOURCES}
+                                      #${UNITEST_SOURCES}
 )
 
+target_link_libraries(${EXECUTABLE_EXE_NAME} PUBLIC pthread)
 # 设置包含路径
 target_include_directories(${EXECUTABLE_EXE_NAME}
     PRIVATE 

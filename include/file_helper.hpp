@@ -53,7 +53,7 @@ class file_helper {
     for (int tries = 0; tries < open_tries_; ++tries) {
       // create containing folder if not exists already.
       lee::create_dir(dir_name(fname));
-      if (!fopen_s(&fd_, fname.c_str(), mode)) {
+      if (!lee::os::fopen_s(&fd_, fname.c_str(), mode)) {
         return;
       }
 

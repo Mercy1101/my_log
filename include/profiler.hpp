@@ -34,7 +34,7 @@ class profiler_log_wrapper {
  public:
   static profiler_log_wrapper& get_instance() {
     static std::once_flag flag;
-    static profiler_log_wrapper* instance;
+    static profiler_log_wrapper* instance = nullptr;
     std::call_once(flag, [&]() { instance = new profiler_log_wrapper(); });
     return *instance;
   }
