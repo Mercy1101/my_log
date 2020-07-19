@@ -25,6 +25,7 @@ set(SOURCES
 # 单元测试文件
 set(UNITEST_SOURCES
   test/file_helper_unittest.cc
+  test/log_wrapper_unittest.cc
 )
 
 # 把源文件添加进工程中
