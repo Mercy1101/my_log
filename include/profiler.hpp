@@ -23,7 +23,7 @@
 #include <ratio>
 #include <utility>
 
-#include "log.hpp"
+#include "my_log/log.hpp"
 
 namespace lee {
 namespace profiler {
@@ -38,20 +38,16 @@ class profiler_log_wrapper {
     std::call_once(flag, [&]() { instance = new profiler_log_wrapper(); });
     return *instance;
   }
-  void log(const std::string& log) {
+  void log(const std::string& log) { profiler_logger->log(log); }
+  ~profiler_log_wrapper() { delete profiler_logger; }
 
-    profiler_logger->log(log);
-  }
-  ~profiler_log_wrapper() { delete profiler_logger;
-  }
  private:
   profiler_log_wrapper() {
-
-  profiler_logger = new lee::rotating_file_sink<std::mutex>(std::string("log/profiler/profiler.log"));
-    profiler_logger->set_level(DEFAULT_PROFILER_LOG_LEVEL); 
+    profiler_logger = new lee::rotating_file_sink<std::mutex>(
+        std::string("log/profiler/profiler.log"));
+    profiler_logger->set_level(DEFAULT_PROFILER_LOG_LEVEL);
   }
-  lee::rotating_file_sink<std::mutex> *profiler_logger = nullptr;
-
+  lee::rotating_file_sink<std::mutex>* profiler_logger = nullptr;
 };
 
 class ProfilerInstance {
@@ -70,21 +66,21 @@ class ProfilerInstance {
         duringTime(0),
         startTime(SteadyClock::now()),
         finishTime(SteadyClock::now()) {
-    lee::profiler::profiler_log_wrapper::get_instance().log(lee::get_time_string()+
-        "\nProfiler is Running in " + sFunc + " Line: " + std::to_string(iLine) +
+    lee::profiler::profiler_log_wrapper::get_instance().log(
+        lee::get_time_string() + "\nProfiler is Running in " + sFunc +
+        " Line: " + std::to_string(iLine) +
         " Memory: " + std::to_string(memory()) + " KB(" +
-        std::to_string(memory(MemoryUnit::MB_)) + " MB)\n ");
+        std::to_string(memory(MemoryUnit::MB_)) + " MB)\n");
     start();
   }
 
   ~ProfilerInstance() {
     finish();
     lee::profiler::profiler_log_wrapper::get_instance().log(
-        lee::get_time_string()+
-        "\n1Function: "+m_Func+" \nSpand Time: " + std::to_string(millisecond()) +
-        "ms( " + std::to_string(second()) +
-        "s) \nMemory: " + std::to_string(memory()) + " KB(" +
-        std::to_string(memory(MemoryUnit::MB_)) +
+        lee::get_time_string() + "\n1Function: " + m_Func +
+        " \nSpand Time: " + std::to_string(millisecond()) + "ms( " +
+        std::to_string(second()) + "s) \nMemory: " + std::to_string(memory()) +
+        " KB(" + std::to_string(memory(MemoryUnit::MB_)) +
         " MB) \n"
         "In File: " +
         m_File + "  LINE: " + std::to_string(m_Line) +

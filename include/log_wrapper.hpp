@@ -19,8 +19,8 @@
 #include <string>
 #include <thread>
 
-#include "log.hpp"
-#include "os.hpp"
+#include "my_log/log.hpp"
+#include "my_log/os.hpp"
 
 namespace lee {
 inline namespace log {
