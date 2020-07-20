@@ -11,16 +11,16 @@
 /// @date   2020-07-18 15:35:21
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MY_LOG_INCLUDE_FILE_HELPER_H_
-#define MY_LOG_INCLUDE_FILE_HELPER_H_
+#ifndef INCLUDE_MY_LOG_FILE_HELPER_HPP_
+#define INCLUDE_MY_LOG_FILE_HELPER_HPP_
 
 #include <string>
+#include <tuple>
 
 #include "my_log/os.hpp"
 
 namespace lee {
 inline namespace my_log {
-
 /// @name     file_helper
 /// @brief    用于实现循环写文件的操作
 ///
@@ -29,7 +29,7 @@ inline namespace my_log {
 /// @warning  线程不安全
 class file_helper {
  public:
-  explicit file_helper() = default;
+  file_helper() = default;
   file_helper(const file_helper &) = delete;
   file_helper &operator=(const file_helper &) = delete;
   inline ~file_helper() { close(); }
@@ -197,7 +197,7 @@ class file_helper {
   std::FILE *fd_{nullptr};
   std::string filename_;
 };
-}  // namespace file_helper
+}  // namespace my_log
 }  // namespace lee
 
-#endif  // end of MY_LOG_INCLUDE_FILE_HELPER_H_
+#endif  // INCLUDE_MY_LOG_FILE_HELPER_HPP_

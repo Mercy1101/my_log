@@ -11,8 +11,8 @@
 /// @date   2020-07-18 15:31:14
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MY_LOG_INCLUDE_OS_H_
-#define MY_LOG_INCLUDE_OS_H_
+#ifndef INCLUDE_MY_LOG_OS_HPP_
+#define INCLUDE_MY_LOG_OS_HPP_
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -76,7 +76,6 @@
 
 namespace lee {
 inline namespace os {
-
 // folder separator
 #ifdef _WIN32
 static const char folder_sep = '\\';
@@ -259,7 +258,7 @@ inline size_t filesize(FILE *f) {
   }
 
 #else  // windows 32 bits
-  long ret = ::_filelength(fd);
+  int16 ret = ::_filelength(fd);
   if (ret >= 0) {
     return static_cast<size_t>(ret);
   }
@@ -327,8 +326,7 @@ inline bool fopen_s(FILE **fp, const std::string &filename,
 
   return *fp == nullptr;
 }
-
 }  // namespace os
 }  // namespace lee
 
-#endif  // end of MY_LOG_INCLUDE_OS_H_
+#endif  // INCLUDE_MY_LOG_OS_HPP_

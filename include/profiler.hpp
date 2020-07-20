@@ -11,8 +11,8 @@
 /// @date   2020-07-19 14:23:58
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MY_LOG_INCLUDE_PROFILER_H_
-#define MY_LOG_INCLUDE_PROFILER_H_
+#ifndef INCLUDE_PROFILER_HPP_
+#define INCLUDE_PROFILER_HPP_
 
 #include <chrono>
 #include <ctime>
@@ -21,6 +21,7 @@
 #include <memory>
 #include <mutex>
 #include <ratio>
+#include <string>
 #include <utility>
 
 #include "my_log/log.hpp"
@@ -91,6 +92,7 @@ class ProfilerInstance {
 #define KB / 1024
 #define MB KB / 1024
 #define GB MB / 1024
+
  private:
   DurationTime duringTime;
   TimePoint startTime;
@@ -101,34 +103,26 @@ class ProfilerInstance {
   int m_Line;          ///< 传入的当前分析在哪一行
 
  public:
-  void start()  // 开始计时
-  {
-    startTime = SteadyClock::now();
-  }
+  void start() { startTime = SteadyClock::now(); }
 
-  void finish()  // 结束计时
-  {
+  void finish() {
     finishTime = SteadyClock::now();
     duringTime =
         std::chrono::duration_cast<DurationTime>(finishTime - startTime);
   }
 
-  void dumpDuringTime(std::ostream& os = std::cout)  // 打印时间
-  {
+  void dumpDuringTime(std::ostream& os = std::cout) {  // 打印时间
     os << "total " << duringTime.count() * 1000 << " milliseconds" << std::endl;
   }
 
-  double second()  // 以秒为单位返回时间
-  {
+  double second() {  // 以秒为单位返回时间
     return duringTime.count();
   }
-  double millisecond()  // 以毫秒为单位返回时间
-  {
+  double millisecond() {  // 以毫秒为单位返回时间
     return duringTime.count() * 1000;
   }
 
-  size_t memory(MemoryUnit mu = MemoryUnit::KB_)  // 查询当前程序的内存使用量
-  {
+  size_t memory(MemoryUnit mu = MemoryUnit::KB_) {  // 查询当前程序的内存使用量
     (void)mu;
     return 0;
 #if 0
@@ -167,4 +161,4 @@ class ProfilerInstance {
 #define PROFILER_F() nullptr
 #endif  // end of LEE_C11_PROFILER_MODE
 
-#endif
+#endif  // INCLUDE_PROFILER_HPP_

@@ -11,8 +11,8 @@
 /// @date   2020-07-18 21:53:30
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MY_LOG_INCLUDE_LOG_WRAPPER_H_
-#define MY_LOG_INCLUDE_LOG_WRAPPER_H_
+#ifndef INCLUDE_LOG_WRAPPER_HPP_
+#define INCLUDE_LOG_WRAPPER_HPP_
 
 #include <mutex>
 #include <sstream>
@@ -128,8 +128,8 @@ class log_wrapper {
         std::this_thread::get_id(), __func__, __LINE__,    \
         ::lee::level_enum::trace, (_log_wrapper__ + (x))); \
   }                                                        \
-  int y;                                                   \
-  (void)y
+  int _log_wrapper_y;                                      \
+  (void)_log_wrapper_y
 
 #define LOG_DEBUG(x)                                       \
   {                                                        \
@@ -138,8 +138,8 @@ class log_wrapper {
         std::this_thread::get_id(), __func__, __LINE__,    \
         ::lee::level_enum::debug, (_log_wrapper__ + (x))); \
   }                                                        \
-  int y;                                                   \
-  (void)y
+  int _log_wrapper_y;                                      \
+  (void)_log_wrapper_y
 
 #define LOG_INFO(x)                                       \
   {                                                       \
@@ -148,8 +148,8 @@ class log_wrapper {
         std::this_thread::get_id(), __func__, __LINE__,   \
         ::lee::level_enum::info, (_log_wrapper__ + (x))); \
   }                                                       \
-  int y;                                                  \
-  (void)y
+  int _log_wrapper_y;                                     \
+  (void)_log_wrapper_y
 
 #define LOG_WARN(x)                                       \
   {                                                       \
@@ -158,8 +158,8 @@ class log_wrapper {
         std::this_thread::get_id(), __func__, __LINE__,   \
         ::lee::level_enum::warn, (_log_wrapper__ + (x))); \
   }                                                       \
-  int y;                                                  \
-  (void)y
+  int _log_wrapper_y;                                     \
+  (void)_log_wrapper_y
 
 #define LOG_ERROR(x)                                       \
   {                                                        \
@@ -168,8 +168,8 @@ class log_wrapper {
         std::this_thread::get_id(), __func__, __LINE__,    \
         ::lee::level_enum::error, (_log_wrapper__ + (x))); \
   }                                                        \
-  int y;                                                   \
-  (void)y
+  int _log_wrapper_y;                                      \
+  (void)_log_wrapper_y
 
 #define LOG_CRITICAL(x)                                       \
   {                                                           \
@@ -178,7 +178,7 @@ class log_wrapper {
         std::this_thread::get_id(), __func__, __LINE__,       \
         ::lee::level_enum::critical, (_log_wrapper__ + (x))); \
   }                                                           \
-  int y;                                                      \
-  (void)y
+  int _log_wrapper_y;                                         \
+  (void)_log_wrapper_y
 
-#endif
+#endif  // INCLUDE_LOG_WRAPPER_HPP_

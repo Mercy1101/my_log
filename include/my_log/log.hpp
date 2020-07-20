@@ -11,19 +11,19 @@
 /// @date   2020-07-18 11:39:27
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MY_LOG_INCLUDE_LOG_H_
-#define MY_LOG_INCLUDE_LOG_H_
+#ifndef INCLUDE_MY_LOG_LOG_HPP_
+#define INCLUDE_MY_LOG_LOG_HPP_
 
 #include <atomic>
 #include <mutex>
 #include <string>
+#include <utility>
 
 #include "my_log/file_helper.hpp"
 #include "my_log/rang.hpp"
 
 namespace lee {
 inline namespace log {
-
 enum class level_enum {
   trace = 0,
   debug = 1,
@@ -84,7 +84,6 @@ class base_sink : public sink {
 
  protected:
   Mutex mutex_;
-
   virtual void sink_it_(const std::string &msg) = 0;
   virtual void flush_() = 0;
 };
@@ -92,7 +91,7 @@ class base_sink : public sink {
 template <typename Mutex>
 class stdout_sink final : public base_sink<Mutex> {
  public:
-  virtual void sink_it_(const std::string &msg) override {
+  void sink_it_(const std::string &msg) override {
     auto begin_pos = msg.find_first_of("[", msg.find_first_of("[") + 1);
     auto end_pos = msg.find_first_of("]", msg.find_first_of("]") + 1);
     auto level_str = msg.substr(begin_pos + 1, end_pos - begin_pos - 1);
@@ -100,7 +99,8 @@ class stdout_sink final : public base_sink<Mutex> {
               << get_cout_color(level_str) << level_str << rang::fg::reset
               << rang::style::reset << msg.substr(end_pos);
   }
-  virtual void flush_() override {}
+
+  void flush_() override {}
 
  private:
   rang::fg get_cout_color(const std::string &color_str) {
@@ -216,8 +216,7 @@ class rotating_file_sink final : public base_sink<Mutex> {
   std::size_t current_size_;
   file_helper file_helper_;  /// 用于打开、写文件的对象
 };
-
 }  // namespace log
 }  // namespace lee
 
-#endif  // end of MY_LOG_INCLUDE_LOG_H_
+#endif  // INCLUDE_MY_LOG_LOG_HPP_
