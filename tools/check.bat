@@ -11,15 +11,15 @@ set report_name=reports/%suffix%
 : 遍历include文件夹下的所有文件
 for /R %src_path% %%f in (*.*) do ( 
 : 作为命令行输出
-cpplint %%f
+cpplint --filter=-build/c++11,-whitespace/comments %%f
 : 作为文件输出
-cpplint %%f >>%report_name%
+cpplint --filter=-build/c++11,-whitespace/comments %%f >>%report_name% 2>&1
 )
 : 遍历include文件夹下的所有文件
 for /R %inc_path% %%f in (*.*) do ( 
 : 作为命令行输出
-cpplint %%f
+cpplint --filter=-build/c++11,-whitespace/comments %%f
 : 作为文件输出
-cpplint %%f >>%report_name% 2>&1
+cpplint --filter=-build/c++11,-whitespace/comments %%f >>%report_name% 2>&1
 )
 pause
