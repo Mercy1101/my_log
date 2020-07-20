@@ -19,6 +19,7 @@
 #include <string>
 
 #include "my_log/file_helper.hpp"
+#include "my_log/rang.hpp"
 
 namespace lee {
 inline namespace log {
@@ -92,9 +93,33 @@ template <typename Mutex>
 class stdout_sink final : public base_sink<Mutex> {
  public:
   virtual void sink_it_(const std::string &msg) override {
-    printf(msg.c_str());
+    auto begin_pos = msg.find_first_of("[", msg.find_first_of("[") + 1);
+    auto end_pos = msg.find_first_of("]", msg.find_first_of("]") + 1);
+    auto level_str = msg.substr(begin_pos + 1, end_pos - begin_pos - 1);
+    std::cout << msg.substr(0, begin_pos + 1) << rang::style::bold
+              << get_cout_color(level_str) << level_str << rang::fg::reset
+              << rang::style::reset << msg.substr(end_pos);
   }
   virtual void flush_() override {}
+
+ private:
+  rang::fg get_cout_color(const std::string &color_str) {
+    if (color_str == "trace") {
+      return rang::fg::gray;
+    } else if (color_str == "debug") {
+      return rang::fg::cyan;
+    } else if (color_str == "info") {
+      return rang::fg::green;
+    } else if (color_str == "warn") {
+      return rang::fg::yellow;
+    } else if (color_str == "error") {
+      return rang::fg::red;
+    } else if (color_str == "critical") {
+      return rang::fg::red;
+    } else {
+      return rang::fg::reset;
+    }
+  }
 };
 template <typename Mutex>
 class rotating_file_sink final : public base_sink<Mutex> {

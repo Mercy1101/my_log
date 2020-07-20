@@ -26,7 +26,7 @@ namespace lee {
 inline namespace log {
 /// 默认文件刷新用的等级
 constexpr lee::level_enum DEFAULT_FILE_LOG_LEVEL = lee::level_enum::info;
-constexpr lee::level_enum DEFAULT_COUT_LOG_LEVEL = lee::level_enum::info;
+constexpr lee::level_enum DEFAULT_COUT_LOG_LEVEL = lee::level_enum::trace;
 class log_wrapper {
  public:
   static log_wrapper& get_instance() {
