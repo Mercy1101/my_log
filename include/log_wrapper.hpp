@@ -129,7 +129,7 @@ class log_wrapper {
         ::lee::level_enum::trace, (_log_wrapper__ + (x))); \
   }                                                        \
   int y;                                                   \
-  (void)y(void) x
+  (void)y
 
 #define LOG_DEBUG(x)                                       \
   {                                                        \
