@@ -78,7 +78,7 @@ class ProfilerInstance {
     finish();
     lee::profiler::profiler_log_wrapper::get_instance().log(
         lee::get_time_string() + "\n1Function: " + m_Func +
-        " \nSpand Time: " + std::to_string(millisecond()) + "ms( " +
+        " \nSpand Time: " + std::to_string(millisecond()) + "ms(" +
         std::to_string(second()) + "s) \nMemory: " + std::to_string(memory()) +
         " KB(" + std::to_string(memory(MemoryUnit::MB_)) +
         " MB) \n"
