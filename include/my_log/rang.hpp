@@ -355,21 +355,21 @@ inline void setWinSGR(rang::bg col, SGR *state) noexcept {
   }
 }
 
-inline void setWinSGR(rang::fg col, SGR *state) noexcept {
+inline void setWinSGR(rang::fg col, SGR &state) noexcept {
   if (col != rang::fg::reset) {
-    state->fgColor = ansi2attr(static_cast<BYTE>(col) - 30);
+    state.fgColor = ansi2attr(static_cast<BYTE>(col) - 30);
   } else {
-    state->fgColor = defaultState().fgColor;
+    state.fgColor = defaultState().fgColor;
   }
 }
 
-inline void setWinSGR(rang::bgB col, SGR *state) noexcept {
-  state->bgColor =
+inline void setWinSGR(rang::bgB col, SGR &state) noexcept {
+  state.bgColor =
       (BACKGROUND_INTENSITY >> 4) | ansi2attr(static_cast<BYTE>(col) - 100);
 }
 
-inline void setWinSGR(rang::fgB col, SGR *state) noexcept {
-  state->fgColor =
+inline void setWinSGR(rang::fgB col, SGR &state) noexcept {
+  state.fgColor =
       FOREGROUND_INTENSITY | ansi2attr(static_cast<BYTE>(col) - 90);
 }
 
