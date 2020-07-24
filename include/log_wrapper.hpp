@@ -91,21 +91,26 @@ class log_wrapper {
     std::string stid = oss.str();
     std::string level_string = get_level_string(level);
 #ifdef _WIN32
-    std::string file = file_name.substr(file_name.find_last_of('\\'));
+    char split = '\\';
 #else
-    std::string file = file_name.substr(file_name.find_last_of('/'));
+    char split = '/';
 #endif
+    std::string file = file_name;
+    if (file_name.find_last_of(split) != std::string::npos) {
+      file = file_name.substr(file_name.find_last_of(split));
+    }
+
 #ifdef USE_LAZY_STRING
     lee::lazy_string_concat_helper<> lazy_concat;
     std::string str_log =
         lazy_concat + lee::get_time_string() + " " + level_string + " " + log +
-        " <In Function: " + func_name + ", Line: " + std::to_string(line) +
-        ", PID: " + stid + ">\n";
+        " <In Function: " + func_name + "," + ", File: " + file +
+        " Line: " + std::to_string(line) + ", PID: " + stid + ">\n";
 #else
-    std::string str_log = lee::get_time_string() + " " + level_string + " " +
-                          log + " <In Function: " + func_name +
-                          ", File: , Line: " + std::to_string(line) +
-                          ", PID: " + stid + ">\n";
+    std::string str_log =
+        lee::get_time_string() + " " + level_string + " " + log +
+        " <In Function: " + func_name + ", File: " + file +
+        ", Line: " + std::to_string(line) + ", PID: " + stid + ">\n";
 #endif
     return str_log;
   }
