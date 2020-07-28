@@ -97,7 +97,7 @@ class log_wrapper {
 #endif
     std::string file = file_name;
     if (file_name.find_last_of(split) != std::string::npos) {
-      file = file_name.substr(file_name.find_last_of(split));
+      file = file_name.substr(file_name.find_last_of(split) + 1);
     }
 
 #ifdef USE_LAZY_STRING
@@ -118,21 +118,20 @@ class log_wrapper {
   std::string get_level_string(const lee::level_enum& level) {
     std::string str("[");
     if (level == lee::level_enum::trace) {
-      str += "trace";
+      str += "trace]";
     } else if (level == lee::level_enum::debug) {
-      str += "debug";
+      str += "debug]";
     } else if (level == lee::level_enum::info) {
-      str += "info";
+      str += "info] ";
     } else if (level == lee::level_enum::warn) {
-      str += "warn";
+      str += "warn] ";
     } else if (level == lee::level_enum::error) {
-      str += "error";
+      str += "error]";
     } else if (level == lee::level_enum::critical) {
-      str += "critical";
+      str += "critical]";
     } else {
-      str += "unknow";
+      str += "unknow]";
     }
-    str += "]";
     return str;
   }
 
