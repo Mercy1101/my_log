@@ -4,16 +4,17 @@
 /// that can be found in the License file.
 
 #include "log_wrapper.hpp"
-#include "profiler.hpp"
 
 #include <catch2/catch.hpp>
 
+#include "profiler.hpp"
+
 TEST_CASE("log_wrapper", "log") {
-  LOG_TRACE("trace this is a test");
-  LOG_DEBUG("debug this is a test");
-  LOG_INFO("info this is a test");
-  LOG_WARN("warn this is a test");
-  LOG_ERROR("error this is a test");
+  { LOG_TRACE("trace this is a test"); }
+  { LOG_DEBUG("debug this is a test"); }
+  { LOG_INFO("info this is a test"); }
+  { LOG_WARN("warn this is a test"); }
+  { LOG_ERROR("error this is a test"); }
 }
 
 TEST_CASE("log_wrapper2", "log2") {
