@@ -25,14 +25,15 @@ set(SOURCES
 
 # 单元测试文件
 set(UNITEST_SOURCES
-  # test/file_helper_unittest.cc
+  test/file_helper_unittest.cc
   test/log_wrapper_unittest.cc
-  # test/profiler_unittest.cc
+  test/profiler_unittest.cc
+  test/lazy_string_unittest.cc
 )
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
-                                      #${UNITEST_SOURCES}
+                                      ${UNITEST_SOURCES}
 )
 
 # 如果是linux系统就添加一个库
