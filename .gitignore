@@ -2,3 +2,6 @@ doc/
 bin/
 build/
 tools/reports/
+*.log
+log/
+test_logs/
