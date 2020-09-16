@@ -102,7 +102,7 @@ class ProfilerInstance {
     std::string log;
     log += lee::get_log_time_string();
     log += "[profiler]";
-    log += "Spand time: ";
+    log += "Spend time: ";
     log += millsec;
     log += " ms(";
     log += sec;
