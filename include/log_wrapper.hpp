@@ -18,6 +18,7 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include "my_log/lazy_string.hpp"
 #include "my_log/log.hpp"
@@ -138,6 +139,35 @@ class log_wrapper {
   lee::rotating_file_sink<std::mutex> logger;
   lee::stdout_sink<std::mutex> cout_logger;
 };
+
+inline std::string to_log(bool x){
+    return x ? "true" : "false";
+}
+inline std::string to_log(int x){
+    return std::to_string(x);
+}
+inline std::string to_log(size_t x){
+    return std::to_string(x);
+}
+inline std::string to_log(double x){
+    return std::to_string(x);
+}
+template <typename T>
+inline std::string to_log(T* x) {
+    return lee::pointer_to_hex(x);
+}
+
+template <typename T>
+inline std::string to_log(const std::vector<T>& vec){
+    std::string res("vec: [");
+    for(auto& it : vec) {
+       res += lee::to_log(it);
+       res += ",";
+    }
+    res.erase(std::prev(res.end()));
+    res += "]";
+    return res;
+}
 }  // namespace log
 }  // namespace lee
 
