@@ -27,8 +27,9 @@
 namespace lee {
 inline namespace log {
 /// 默认文件刷新用的等级
-constexpr lee::level_enum DEFAULT_FILE_LOG_LEVEL = lee::level_enum::info;
-constexpr lee::level_enum DEFAULT_COUT_LOG_LEVEL = lee::level_enum::trace;
+constexpr lee::level_enum DEFAULT_FILE_LOG_LEVEL = lee::level_enum::debug;
+constexpr lee::level_enum DEFAULT_COUT_LOG_LEVEL = lee::level_enum::debug;
+
 class log_wrapper {
  public:
   static log_wrapper& get_instance() {
@@ -62,6 +63,16 @@ class log_wrapper {
     base_log(level, formated_log);
   }
 
+  void set_file_log_level(level_enum log_level) { logger.set_level(log_level); }
+
+  void set_console_log_level(level_enum log_level) {
+    cout_logger.set_level(log_level);
+  }
+
+  void set_flush_file_level(level_enum log_level) {
+    file_flush_level_ = log_level;
+  }
+
  private:
   log_wrapper() {
     logger.set_level(DEFAULT_FILE_LOG_LEVEL);
@@ -76,8 +87,10 @@ class log_wrapper {
     if (cout_logger.should_log(level)) {
       cout_logger.log(log);
     }
-    logger.log(log);
-    if (logger.level() <= (level)) {
+    if (logger.should_log(level)) {
+      logger.log(log);
+    }
+    if (file_flush_level_ <= level) {
       logger.flush();
     }
   }
@@ -96,6 +109,7 @@ class log_wrapper {
 #else
     char split = '/';
 #endif
+
     std::string file = file_name;
     if (file_name.find_last_of(split) != std::string::npos) {
       file = file_name.substr(file_name.find_last_of(split) + 1);
@@ -138,97 +152,91 @@ class log_wrapper {
 
   lee::rotating_file_sink<std::mutex> logger;
   lee::stdout_sink<std::mutex> cout_logger;
+  lee::level_enum file_flush_level_ = lee::level_enum::info;
 };
-
-inline std::string to_log(bool x){
-    return x ? "true" : "false";
-}
-inline std::string to_log(int x){
-    return std::to_string(x);
-}
-inline std::string to_log(size_t x){
-    return std::to_string(x);
-}
-inline std::string to_log(double x){
-    return std::to_string(x);
-}
-template <typename T>
-inline std::string to_log(T* x) {
-    return lee::pointer_to_hex(x);
-}
-
-template <typename T>
-inline std::string to_log(const std::vector<T>& vec){
-    std::string res("vec: [");
-    for(auto& it : vec) {
-       res += lee::to_log(it);
-       res += ",";
-    }
-    res.erase(std::prev(res.end()));
-    res += "]";
-    return res;
-}
 }  // namespace log
 }  // namespace lee
+template <typename T>
+std::string to_log(const T& type) {
+  std::ostringstream stream;
+  stream << type;
+  return stream.str();
+}
+inline std::string to_log(bool x) { return x ? "true" : "false"; }
+template <typename T>
+inline std::string to_log(T* x) {
+  return lee::pointer_to_hex(x);
+}
+
+template <typename T>
+inline std::string to_log(const std::vector<T>& vec) {
+  std::string res("[");
+  for (auto& it : vec) {
+    res += lee::to_log(it);
+    res += ",";
+  }
+  res.erase(std::prev(res.end()));
+  res += "]";
+  return res;
+}
+
+template <>
+inline std::string to_log(const std::string& str) {
+  return str;
+}
+
+template <>
+inline std::string to_log(const char* const str) {
+  std::string temp(str);
+  return lee::to_log(temp);
+}
 
 #define LOG_TRACE(x)                                              \
-  {                                                               \
+  do {                                                            \
     std::string _log_wrapper__;                                   \
     ::lee::log::log_wrapper::get_instance().write_log(            \
         std::this_thread::get_id(), __FILE__, __func__, __LINE__, \
         ::lee::level_enum::trace, (_log_wrapper__ + (x)));        \
-  }                                                               \
-  int _log_wrapper_y##__LINE__;                                   \
-  (void)_log_wrapper_y##__LINE__
+  } while (false)
 
 #define LOG_DEBUG(x)                                              \
-  {                                                               \
+  do {                                                            \
     std::string _log_wrapper__;                                   \
     ::lee::log::log_wrapper::get_instance().write_log(            \
         std::this_thread::get_id(), __FILE__, __func__, __LINE__, \
         ::lee::level_enum::debug, (_log_wrapper__ + (x)));        \
-  }                                                               \
-  int _log_wrapper_y##__LINE__;                                   \
-  (void)_log_wrapper_y##__LINE__
+  } while (false)
 
 #define LOG_INFO(x)                                               \
-  {                                                               \
+  do {                                                            \
     std::string _log_wrapper__;                                   \
     ::lee::log::log_wrapper::get_instance().write_log(            \
         std::this_thread::get_id(), __FILE__, __func__, __LINE__, \
         ::lee::level_enum::info, (_log_wrapper__ + (x)));         \
-  }                                                               \
-  int _log_wrapper_y##__LINE__;                                   \
-  (void)_log_wrapper_y##__LINE__
+  } while (false)
 
 #define LOG_WARN(x)                                               \
-  {                                                               \
+  do {                                                            \
     std::string _log_wrapper__;                                   \
     ::lee::log::log_wrapper::get_instance().write_log(            \
         std::this_thread::get_id(), __FILE__, __func__, __LINE__, \
         ::lee::level_enum::warn, (_log_wrapper__ + (x)));         \
-  }                                                               \
-  int _log_wrapper_y##__LINE__;                                   \
-  (void)_log_wrapper_y##__LINE__
+  } while (false)
 
 #define LOG_ERROR(x)                                              \
-  {                                                               \
+  do {                                                            \
     std::string _log_wrapper__;                                   \
     ::lee::log::log_wrapper::get_instance().write_log(            \
         std::this_thread::get_id(), __FILE__, __func__, __LINE__, \
         ::lee::level_enum::error, (_log_wrapper__ + (x)));        \
-  }                                                               \
-  int _log_wrapper_y##__LINE__;                                   \
-  (void)_log_wrapper_y##__LINE__
+  } while (false)
 
 #define LOG_CRITICAL(x)                                           \
-  {                                                               \
+  do {                                                            \
     std::string _log_wrapper__;                                   \
     ::lee::log::log_wrapper::get_instance().write_log(            \
         std::this_thread::get_id(), __FILE__, __func__, __LINE__, \
         ::lee::level_enum::critical, (_log_wrapper__ + (x)));     \
-  }                                                               \
-  int _log_wrapper_y##__LINE__;                                   \
-  (void)_log_wrapper_y##__LINE__
+  } while (false)
 
-#endif  // INCLUDE_LOG_WRAPPER_HPP_
+#endif
