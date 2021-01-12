@@ -14,6 +14,15 @@
 #ifndef INCLUDE_PROFILER_HPP_
 #define INCLUDE_PROFILER_HPP_
 
+#ifdef WIN32
+#pragma warning (disable : 4996)
+#include <Windows.h>
+#include <psapi.h>
+#else
+#include <sys/resource.h>
+#include <sys/time.h>
+#endif
+
 #include <chrono>
 #include <ctime>
 #include <exception>
@@ -25,14 +34,6 @@
 #include <string>
 #include <thread>
 #include <utility>
-
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <sys/resource.h>
-#include <sys/time.h>
-
-#endif
 
 #include "my_log/log.hpp"
 
@@ -100,7 +101,7 @@ class ProfilerInstance {
       sec = millsec.substr(0, sec.find('.') + 3 + 1);
     }
     std::string log;
-    log += lee::get_log_time_string();
+    log += lee::get_time_string();
     log += "[profiler]";
     log += "Spend time: ";
     log += millsec;
@@ -206,8 +207,8 @@ class ProfilerInstance {
   int get_sys_mem_use() {  //获取系统当前可用内存
     int mem_free = -1;     //空闲的内存，=总内存-使用了的内存
     int mem_total = -1;    //当前系统可用总内存
-    int mem_buffers = -1;  //缓存区的内存大小
-    int mem_cached = -1;   //缓存区的内存大小
+    /// int mem_buffers = -1;  //缓存区的内存大小
+    /// int mem_cached = -1;   //缓存区的内存大小
     char name[20];
 
     FILE* fp;

@@ -19,6 +19,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <sstream>
 
 #include "my_log/lazy_string.hpp"
 #include "my_log/log.hpp"
@@ -155,13 +156,27 @@ class log_wrapper {
   lee::level_enum file_flush_level_ = lee::level_enum::info;
 };
 }  // namespace log
-}  // namespace lee
 template <typename T>
 std::string to_log(const T& type) {
   std::ostringstream stream;
   stream << type;
   return stream.str();
 }
+
+inline std::string to_hex(const size_t dec) {
+  std::ostringstream h;
+  h << std::hex << (dec);
+  std::string result("0x");
+  result += h.str();
+  return result;
+}
+
+template<typename T>
+inline std::string pointer_to_hex(const T pointer) {
+  static_assert(std::is_pointer<T>::value, "to_hex param is not a pointer!");
+  return lee::to_hex(reinterpret_cast<size_t>(pointer));
+}
+
 inline std::string to_log(bool x) { return x ? "true" : "false"; }
 template <typename T>
 inline std::string to_log(T* x) {
@@ -190,6 +205,7 @@ inline std::string to_log(const char* const str) {
   std::string temp(str);
   return lee::to_log(temp);
 }
+}  // namespace lee
 
 #define LOG_TRACE(x)                                              \
   do {                                                            \
