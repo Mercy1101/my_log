@@ -107,8 +107,8 @@ inline std::string get_time_string() {
 #endif
   char p[32] = {0};
   strftime(p, sizeof(p), "[%F %T", &buf);
-  auto time_str = std::to_string(t%1000);
-  while(time_str.size() < 3){
+  auto time_str = std::to_string(t % 1000);
+  while (time_str.size() < 3) {
     time_str = "0" + time_str;
   }
   return std::string(p) + "." + time_str + "]";

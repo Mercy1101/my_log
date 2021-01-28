@@ -15,7 +15,7 @@
 #define INCLUDE_PROFILER_HPP_
 
 #ifdef WIN32
-#pragma warning (disable : 4996)
+#pragma warning(disable : 4996)
 #include <Windows.h>
 #include <psapi.h>
 #else

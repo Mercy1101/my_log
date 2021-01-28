@@ -71,4 +71,3 @@ class lazy_string_concat_helper<> {
 }  // namespace lee
 
 #endif
-

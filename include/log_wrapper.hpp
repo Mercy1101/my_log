@@ -19,11 +19,11 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <sstream>
 
 #include "my_log/lazy_string.hpp"
 #include "my_log/log.hpp"
 #include "my_log/os.hpp"
+
 
 namespace lee {
 inline namespace log {
@@ -171,7 +171,7 @@ inline std::string to_hex(const size_t dec) {
   return result;
 }
 
-template<typename T>
+template <typename T>
 inline std::string pointer_to_hex(const T pointer) {
   static_assert(std::is_pointer<T>::value, "to_hex param is not a pointer!");
   return lee::to_hex(reinterpret_cast<size_t>(pointer));

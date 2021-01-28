@@ -369,8 +369,7 @@ inline void setWinSGR(rang::bgB col, SGR &state) noexcept {
 }
 
 inline void setWinSGR(rang::fgB col, SGR &state) noexcept {
-  state.fgColor =
-      FOREGROUND_INTENSITY | ansi2attr(static_cast<BYTE>(col) - 90);
+  state.fgColor = FOREGROUND_INTENSITY | ansi2attr(static_cast<BYTE>(col) - 90);
 }
 
 inline void setWinSGR(rang::style style, SGR &state) noexcept {  // NOLINT
